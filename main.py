@@ -1,6 +1,5 @@
 from flask import Flask 
 
-
 # Initialize the app 
 app = Flask(__name__) 
 # This is our index route --- when we go to the main URL, this is what gets returned 
