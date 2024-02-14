@@ -1,25 +1,17 @@
+
+
 import os
+import sqlalchemy
+import numpy
 from flask import Flask
-import psycopg2
 
 app = Flask(__name__)
 
-# Define database connection parameters
-db_params = {
-    'database': "lab1.2",
-    'user': "postgres",
-    'password': "IMissPinole1312!?",
-    'host': "34.16.107.82",
-    'port': "5432"
-}
-
-# Connect to your PostGIS database
-conn = psycopg2.connect(**db_params)
-cur = conn.cursor()
 
 @app.route("/")
 def hello_world():
     return "Yep!"
+
 
 @app.route("/hello")
 def hello():
