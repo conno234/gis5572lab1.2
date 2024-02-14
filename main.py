@@ -1,36 +1,29 @@
-Let's look at a basic example of how we can use psycopg2 within flask.
-# Import packages
-from flask import Flask
+import os
 import psycopg2
-# Initialize the app
+from flask import Flask
+
 app = Flask(__name__)
-# Create index route
-@app.route("/", methods=["GET"])
-def index():
-  return "You made it! The API is working."
-# Create data route
-@app.route("/data", methods=["GET"])
-def data():
-  # Connect to the database
-  conn = psycopg2.connect(
-    host="localhost",
-    database="my_database",
-    user="postgres,
-    password="my_password",
-    port=5432,
-  )
-  # Retrieve data
-  with conn.cursor() as cur:
-    # Query to get data
-    cur.execute("SELECT ST_AsGeoJSON(my_table.*)::json FROM my_table;")
-    # Fetch
-    data = cur.fetchall()
-  # Do some processing here (if needed)
-  # ...
-  # Close the connection
-  conn.close()
-  # Return the data
-  return data
-# Run the Flask app, when the file is run
+
+# Define database connection parameters
+db_params = {
+    'database': "lab1.2",
+    'user': "postgres",
+    'password': "IMissPinole1312!?",
+    'host': "34.16.107.82",
+    'port': "5432"
+}
+
+# Connect to your PostGIS database
+conn = psycopg2.connect(**db_params)
+cur = conn.cursor()
+
+@app.route("/")
+def hello_world():
+    return "Yep!"
+
+@app.route("/hello")
+def hello():
+    return "hello"
+
 if __name__ == "__main__":
-app.run(debug=True, host="0.0.0.0", port=8080)
+    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
