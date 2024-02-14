@@ -1,9 +1,7 @@
 import os
 import json
+import psycopg2
 from flask import Flask, jsonify
-from sqlalchemy import create_engine, MetaData, Table
-from sqlalchemy.orm import sessionmaker
-from geoalchemy2 import Geometry
 
 app = Flask(__name__)
 
@@ -16,18 +14,9 @@ db_params = {
     'port': "5432"
 }
 
-# Create a SQLAlchemy engine
-engine = create_engine(f"postgresql://{db_params['user']}:{db_params['password']}@{db_params['host']}:{db_params['port']}/{db_params['database']}")
-
-# Create a session
-Session = sessionmaker(bind=engine)
-session = Session()
-
-# Define your SQLAlchemy metadata
-metadata = MetaData()
-
-# Define your polygon table
-polygon_table = Table('your_polygon_table', metadata, autoload=True, autoload_with=engine, extend_existing=True)
+# Connect to your PostGIS database
+conn = psycopg2.connect(**db_params)
+cur = conn.cursor()
 
 @app.route("/")
 def hello_world():
@@ -39,13 +28,12 @@ def hello():
 
 @app.route("/polygon")
 def get_polygon_geojson():
-    # Query the polygon from the database
-    result = session.query(polygon_table).limit(1).first()
-    
-    # Convert the geometry column to GeoJSON
-    geojson_polygon = session.scalar(result.geom.ST_AsGeoJSON())
+    # Fetch the polygon from the database
+    cur.execute("SELECT ST_AsGeoJSON(geom) FROM your_polygon_table LIMIT 1;")
+    row = cur.fetchone()
+    geojson_polygon = row[0]
 
-    # Convert the GeoJSON string to a Python dictionary
+    # Convert the polygon to a Python dictionary
     polygon_dict = json.loads(geojson_polygon)
 
     return jsonify(polygon_dict)
