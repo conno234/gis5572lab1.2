@@ -27,7 +27,7 @@ session = Session()
 metadata = MetaData()
 
 # Define your polygon table
-polygon_table = Table('your_polygon_table', metadata, autoload=True, autoload_with=engine, extend_existing=True)
+polygon_table = Table('labtable', metadata, autoload=True, autoload_with=engine, extend_existing=True)
 
 @app.route("/polygon")
 def get_polygon_geojson():
