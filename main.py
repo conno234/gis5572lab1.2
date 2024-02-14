@@ -24,7 +24,7 @@ def data():
     # Retrieve data 
     with conn.cursor() as cur: 
         # Query to get data 
-        cur.execute("SELECT ST_AsGeoJSON(\"lab table\".*)::json FROM \"lab table\";")
+        cur.execute("SELECT ST_AsGeoJSON(labtable.*)::json FROM labtable;")
         # Fetch 
         data = cur.fetchall() 
     # Do some processing here (if needed) 
