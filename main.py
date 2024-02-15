@@ -13,20 +13,16 @@ db_params = {
     'port': "5432"
 }
 
-def fetch_geom_as_geojson(table_name, geom_column, db_params):
-    conn = psycopg2.connect(**db_params)
-    cur = conn.cursor()
-    cur.execute(f"SELECT ST_AsGeoJSON({geom_column}) FROM {table_name} LIMIT 1")
-    geojson = cur.fetchone()[0]
-    conn.close()
-    return geojson
+@app.route("/", methods=["GET"]) 
+def index(): 
+    return "{'type': 'MultiPolygon',
+ 'coordinates': [[[[-74, 40.00012207],
+    [-73, 40.00012207],
+    [-73, 41.00012207],
+    [-74, 41.00012207],
+    [-74, 40.00012207]]]]}"
 
-@app.route('/')
-def get_geojson():
-    table_name = "labtable"
-    geom_column = "geom"
-    geojson = fetch_geom_as_geojson(table_name, geom_column, db_params)
-    return jsonify(geojson)
+
     
 if __name__ == '__main__':
     app.run(debug=True)
