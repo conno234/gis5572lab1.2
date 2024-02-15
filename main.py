@@ -30,7 +30,18 @@ def get_geojson():
     geom_column = "geom"
     geojson = fetch_geom_as_geojson(table_name, geom_column, db_params)
     clean_geojson = remove_slashes(geojson)
-    return clean_geojson
+    # Wrap the GeoJSON in a FeatureCollection
+    feature_collection = {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "geometry": clean_geojson,
+                "properties": {}
+            }
+        ]
+    }
+    return jsonify(feature_collection)
 
 
 if __name__ == '__main__':
