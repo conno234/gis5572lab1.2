@@ -7,12 +7,11 @@ app = Flask(__name__)
 
 # Database connection parameters
 db_params = {
-    'database': "lab1.2",
-    'user': "postgres",
-    'password': "IMissPinole1312!?",
-    'host': "34.16.107.82",
-    'port': "5432"
-}
+    'database': os.environ.get("DATABASE"),
+    'user': os.environ.get("USER"),
+    'password': os.environ.get("PASSWORD"),
+    'host': os.environ.get("HOST"),
+    'port': os.environ.get("FLASKPORT")
 
 def fetch_geom_as_geojson(table_name, geom_column, db_params):
     conn = psycopg2.connect(**db_params)
@@ -42,4 +41,4 @@ def get_geojson():
     return jsonify(feature_collection)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0", port=8080)
