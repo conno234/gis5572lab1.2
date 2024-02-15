@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 import psycopg2
+import json
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -17,32 +18,28 @@ def fetch_geom_as_geojson(table_name, geom_column, db_params):
     conn = psycopg2.connect(**db_params)
     cur = conn.cursor()
     cur.execute(f"SELECT ST_AsGeoJSON({geom_column}) FROM {table_name} LIMIT 1")
-    geojson = cur.fetchone()[0]
+    geojson_with_slashes = cur.fetchone()[0]
     conn.close()
-    return geojson
-
-def remove_slashes(geojson_string):
-    return geojson_string.replace("\\", "")
+    # Remove the slashes from the GeoJSON string
+    geojson_without_slashes = json.loads(geojson_with_slashes.replace("\\", ""))
+    return geojson_without_slashes
 
 @app.route('/')
 def get_geojson():
     table_name = "labtable"
     geom_column = "geom"
     geojson = fetch_geom_as_geojson(table_name, geom_column, db_params)
-    clean_geojson = remove_slashes(geojson)
-    # Wrap the GeoJSON in a FeatureCollection
     feature_collection = {
         "type": "FeatureCollection",
         "features": [
             {
                 "type": "Feature",
-                "geometry": clean_geojson,
+                "geometry": geojson,
                 "properties": {}
             }
         ]
     }
     return jsonify(feature_collection)
-
 
 if __name__ == '__main__':
     app.run(debug=True)
