@@ -30,7 +30,7 @@ def get_geojson():
     geom_column = "geom"
     geojson = fetch_geom_as_geojson(table_name, geom_column, db_params)
     clean_geojson = remove_slashes(geojson)
-    return jsonify(clean_geojson)
+    return clean_geojson
 
 
 if __name__ == '__main__':
