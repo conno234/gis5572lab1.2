@@ -13,7 +13,7 @@ db_params = {
     'password': os.environ.get("DB_PASSWORD"),
     'host': os.environ.get("DB_HOST"),
     'port': os.environ.get("DB_PORT")
-
+}
 def fetch_geom_as_geojson(table_name, geom_column, db_params):
     conn = psycopg2.connect(**db_params)
     cur = conn.cursor()
