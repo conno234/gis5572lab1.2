@@ -27,7 +27,6 @@ def get_geojson():
     table_name = "labtable"
     geom_column = "geom"
     geojson = fetch_geom_as_geojson(table_name, geom_column, db_params)
-    geojson_object = json.loads(geojson)
-    return geojson_object
+    return geojson
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=8080)
