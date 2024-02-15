@@ -1,11 +1,6 @@
-import os
-import json
-from flask import Flask, jsonify
-from sqlalchemy import create_engine, MetaData, Table
-from sqlalchemy.orm import sessionmaker
-from geoalchemy2 import Geometry
-
-app = Flask(__name__)
+# Import packages 
+from flask import Flask 
+import psycopg2 
 
 # Define database connection parameters
 db_params = {
@@ -16,31 +11,33 @@ db_params = {
     'port': "5432"
 }
 
-# Create a SQLAlchemy engine
-engine = create_engine(f"postgresql://{db_params['user']}:{db_params['password']}@{db_params['host']}:{db_params['port']}/{db_params['database']}")
+# Initialize the app 
+app = Flask(__name__) 
 
-# Create a session
-Session = sessionmaker(bind=engine)
-session = Session()
+# Create index route 
+@app.route("/", methods=["GET"]) 
+def index(): 
+    return "You made it! The API is working." 
 
-# Define your SQLAlchemy metadata
-metadata = MetaData()
-
-# Define your polygon table
-polygon_table = Table('labtable', metadata, autoload=True, autoload_with=engine, extend_existing=True)
-
-@app.route("/polygon")
-def get_polygon_geojson():
-    # Query the polygon from the database
-    result = session.query(polygon_table).limit(1).first()
+# Create data route 
+@app.route("/data", methods=["GET"]) 
+def data(): 
+    # Connect to the database 
+    conn = psycopg2.connect(**db_params)
     
-    # Convert the geometry column to GeoJSON
-    geojson_polygon = session.scalar(result.geom.ST_AsGeoJSON())
+    # Retrieve data 
+    with conn.cursor() as cur: 
+        # Query to get data 
+        cur.execute("SELECT ST_AsGeoJSON(labtable.*)::json FROM labtable;") 
+        # Fetch 
+        data = cur.fetchall() 
+    
+    # Close the connection 
+    conn.close() 
+    
+    # Return the data 
+    return data 
 
-    # Convert the GeoJSON string to a Python dictionary
-    polygon_dict = json.loads(geojson_polygon)
-
-    return jsonify(polygon_dict)
-
-if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+# Run the Flask app, when the file is run 
+if __name__ == "__main__": 
+    app.run(debug=True, host="0.0.0.0", port=8080)
