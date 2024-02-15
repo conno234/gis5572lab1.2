@@ -1,3 +1,4 @@
+#Some of this code was based on code acquired through ChatGPT prompts
 from flask import Flask, jsonify
 import psycopg2 
 import json
