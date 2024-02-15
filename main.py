@@ -31,5 +31,6 @@ def get_geojson():
     geojson = fetch_geom_as_geojson(table_name, geom_column, db_params)
     return jsonify(geojson)
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# Run the Flask app, when the file is run 
+if __name__ == "__main__": 
+    app.run(debug=True, host="0.0.0.0", port=8080)
