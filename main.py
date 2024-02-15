@@ -1,6 +1,7 @@
 from flask import Flask, jsonify
 import psycopg2
 import json
+import os
 
 # Initialize Flask app
 app = Flask(__name__)
