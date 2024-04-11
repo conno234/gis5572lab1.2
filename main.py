@@ -17,13 +17,6 @@ db_params = {
 
 # Next I need to establish the parameters needed to connect to the database
 # The login information has been stored as variables on the Google Cloud Run deployment for this.
-db_params = {
-    'database': os.environ.get("DB_DATABASE"),  
-    'user': os.environ.get("DB_USER"),  
-    'password': os.environ.get("DB_PASSWORD"), 
-    'host': os.environ.get("DB_HOST"),  
-    'port': os.environ.get("DB_PORT") 
-}
 
 # Next, this function fetches the geometry as GeoJSON from the database
 def fetch_geom_as_geojson(table_name, geom_column, db_params):
