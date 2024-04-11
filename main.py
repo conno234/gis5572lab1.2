@@ -7,6 +7,14 @@ import os
 # First, I initialize my Flask application
 app = Flask(__name__)
 
+db_params = {
+    'database': 'lab3',  
+    'user': os.environ.get("DB_USER"),  
+    'password': os.environ.get("DB_PASSWORD"), 
+    'host': os.environ.get("DB_HOST"),  
+    'port': os.environ.get("DB_PORT") 
+}
+
 # Next I need to establish the parameters needed to connect to the database
 # The login information has been stored as variables on the Google Cloud Run deployment for this.
 db_params = {
